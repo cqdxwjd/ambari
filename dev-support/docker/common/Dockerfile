@@ -17,15 +17,15 @@
 # Dockerfile for installing the necessary dependencies for building Ambari
 
 ARG BUILD_OS
-FROM ambari-build-base:${BUILD_OS}
+FROM registry.cn-hangzhou.aliyuncs.com/hmf-ambari/ambari-build-base:${BUILD_OS}
 
 ARG MAVEN_VERSION=3.3.9
 ENV MAVEN_HOME /opt/maven
 RUN mkdir -p $MAVEN_HOME \
-  && maven_url=$(curl -L -s -S http://www.apache.org/dyn/closer.cgi/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz?as_json=1 \
+  && maven_url=$(curl -L -s -S https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz?as_json=1 \
       | jq --raw-output '.preferred,.path_info' \
       | sed -e '1N' -e 's/\n//') \
-  && : ${maven_url:="http://www.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"} \
+  && : ${maven_url:="https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz"} \
   && echo "Downloading Maven from ${maven_url}" \
   && curl -L -s -S "${maven_url}" \
     | tar -xzf - --strip-components 1 -C $MAVEN_HOME

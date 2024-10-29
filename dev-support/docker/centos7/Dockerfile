@@ -16,7 +16,7 @@
 
 # Dockerfile for installing the necessary dependencies for building Ambari on CentOS7
 
-FROM centos:7
+FROM registry.cn-hangzhou.aliyuncs.com/hmf-base/centos-hmf:7
 
 RUN yum -q -y install \
     curl \
@@ -34,5 +34,5 @@ RUN yum -q -y install \
   && yum clean all \
   && rm -rf /var/cache/yum
 
-RUN curl -LSs -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 \
+RUN curl -LSs -o /usr/local/bin/jq https://obs-fjfz2.cucloud.cn/hmf/jq-linux64 \
   && chmod 755 /usr/local/bin/jq

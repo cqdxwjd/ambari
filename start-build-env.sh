@@ -30,8 +30,8 @@ cd "$(dirname "$0")"
 # Maven version
 : ${MAVEN_VERSION:=3.3.9}
 
-docker build -t ambari-build-base:${BUILD_OS} dev-support/docker/${BUILD_OS}
-docker build -t ambari-build:${BUILD_OS} --build-arg BUILD_OS="${BUILD_OS}" --build-arg MAVEN_VERSION="${MAVEN_VERSION}" dev-support/docker/common
+docker build -t registry.cn-hangzhou.aliyuncs.com/hmf-ambari/ambari-build-base:${BUILD_OS} dev-support/docker/${BUILD_OS}
+docker build -t registry.cn-hangzhou.aliyuncs.com/hmf-ambari/ambari-build:${BUILD_OS} --build-arg BUILD_OS="${BUILD_OS}" --build-arg MAVEN_VERSION="${MAVEN_VERSION}" dev-support/docker/common
 
 USER_NAME=${SUDO_USER:=$USER}
 USER_ID=$(id -u "${USER_NAME}")
@@ -39,7 +39,7 @@ GROUP_ID=$(id -g "${USER_NAME}")
 USER_TAG="ambari-build-${USER_NAME}-${USER_ID}:${BUILD_OS}"
 
 docker build -t "$USER_TAG" - <<UserSpecificDocker
-FROM ambari-build:${BUILD_OS}
+FROM registry.cn-hangzhou.aliyuncs.com/hmf-ambari/ambari-build:${BUILD_OS}
 RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME}
 RUN useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME}
 ENV HOME /home/${USER_NAME}
@@ -58,7 +58,7 @@ docker run --rm=true $TTY_MODE \
   -u "${USER_NAME}" \
   -h "${BUILD_OS}" \
   -v "${AMBARI_DIR}:/home/${USER_NAME}/src:delegated" \
-  -v "${HOME}/.m2:/home/${USER_NAME}/.m2:cached" \
+  -v "/Users/${USER_NAME}/.m2:/home/${USER_NAME}/.m2:cached" \
   -w "/home/${USER_NAME}/src" \
   "$USER_TAG" \
   "$@"
